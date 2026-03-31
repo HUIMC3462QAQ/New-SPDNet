@@ -23,7 +23,7 @@ public class Net {
 	static private Socket socket;
 	// 服务器地址
 	@Getter
-	private static String serverUrl = isDebug() ? "http://127.0.0.1:65535/spdnet" : "http://45.125.44.66:65535/spdnet";
+	private static String serverUrl = isDebug() ? "http://127.0.0.1:65535/spdnet" : "http://10.62.30.225:65535/spdnet";
 	// 服务器的种子列表
 	public static ConcurrentHashMap<String, Long> seeds = new ConcurrentHashMap<>();
 	// 玩家名
@@ -32,7 +32,7 @@ public class Net {
 	public static ConcurrentHashMap<String, Player> playerList = new ConcurrentHashMap<>();
 	public static Vector<String> chatMessages = new Vector<>();
 	@lombok.Setter
-	public static String webUrl = "http://jdsalingzx.top";
+	public static String webUrl = "http://10.62.30.225:8080";
 
 	/**
 	 * 获取一个socketIO对象
