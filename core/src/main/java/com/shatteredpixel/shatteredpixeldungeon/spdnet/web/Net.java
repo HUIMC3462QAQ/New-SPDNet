@@ -40,8 +40,14 @@ public class Net {
 	 * @return socketIO对象
 	 */
 	public static Socket getSocket() {
-		if (serverUrl.isEmpty()) {
-			refreshServerUrl();
+		// 如果是默认URL，尝试加载保存的自定义URL
+		if (serverUrl.equals(isDebug() ? "http://127.0.0.1:65535/spdnet" : "http://10.62.30.225:65535/spdnet")) {
+			if (NetSettings.hasCustomServer()) {
+				String savedUrl = NetSettings.getServerUrl();
+				String savedPort = NetSettings.getServerPort();
+				String port = savedPort.isEmpty() ? "65535" : savedPort;
+				serverUrl = "http://" + savedUrl + ":" + port + "/spdnet";
+			}
 		}
 		if (socket == null) {
 			try {
@@ -105,6 +111,17 @@ public class Net {
 	 */
 	public static void refreshServerUrl() {
 		if (!isDesktop() || !isDebug()) {
+			// 优先使用用户保存的自定义服务器URL
+			String savedUrl = NetSettings.getServerUrl();
+			String savedPort = NetSettings.getServerPort();
+
+			if (!savedUrl.isEmpty()) {
+				String port = savedPort.isEmpty() ? "65535" : savedPort;
+				serverUrl = "http://" + savedUrl + ":" + port + "/spdnet";
+				return;
+			}
+
+			// 否则使用远程配置
 			NetConfig.refreshConfig();
 			serverUrl = NetConfig.config.getString("serverUrl");
 		}
