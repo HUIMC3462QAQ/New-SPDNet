@@ -97,12 +97,12 @@ public class NetWndServerInfo extends NetWindow {
 
 		// IP输入框
 		RenderedTextBlock ipLabel = PixelScene.renderTextBlock(Messages.get(this, "ip_address"), 7);
-		ipLabel.maxWidth(maxWidth / 2 - GAP);
+		ipLabel.maxWidth((int)(maxWidth / 2 - GAP));
 		ipLabel.setPos(0, bottom);
 		add(ipLabel);
 
 		RenderedTextBlock portLabel = PixelScene.renderTextBlock(Messages.get(this, "port"), 7);
-		portLabel.maxWidth(maxWidth / 2 - GAP);
+		portLabel.maxWidth((int)(maxWidth / 2 - GAP));
 		portLabel.setPos(maxWidth / 2 + GAP, bottom);
 		add(portLabel);
 
