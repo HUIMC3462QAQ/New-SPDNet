@@ -813,6 +813,8 @@ public class GameScene extends PixelScene {
 				enterDungeon.setDailySeed(NetInProgress.seed);
 				enterDungeon.setDailyRecordDate(NetInProgress.dailyRecordDate);
 			}
+			// SPDNet: 发送房间ID用于多人同怪
+			enterDungeon.setRoomId(NetInProgress.roomId);
 			Sender.sendEnterDungeon(enterDungeon);
 			// 同步玩家列表
 			NetHero.syncWithCurrentLevel();

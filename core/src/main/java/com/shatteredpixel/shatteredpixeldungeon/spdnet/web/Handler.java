@@ -117,6 +117,12 @@ public class Handler {
 			NLog.h(displayName + "以" +
 					enterDungeon.getStatus().getGameModeEnum().getName().substring(0, 2) + "模式, " +
 					SPDUtils.activeChallenges(enterDungeon.getStatus().getChallenges()) + "挑进入了地牢");
+		} else {
+			// SPDNet: 保存服务器返回的房间ID，用于后续进入同一地牢
+			if (enterDungeon.getRoomId() != null) {
+				NetInProgress.roomId = enterDungeon.getRoomId();
+				NLog.h("已加入房间: " + enterDungeon.getRoomId());
+			}
 		}
 	}
 

@@ -17,11 +17,14 @@ public class CEnterDungeon extends Data {
 	private Integer dailyGroupIndex;
 	private Long dailySeed;
 	private String dailyRecordDate;
+	// SPDNet: 房间ID，用于多人同怪
+	private String roomId;
 
 	public CEnterDungeon(Status status) {
 		this.status = status;
 		this.dailyGroupIndex = null;
 		this.dailySeed = null;
 		this.dailyRecordDate = null;
+		this.roomId = null;
 	}
 }

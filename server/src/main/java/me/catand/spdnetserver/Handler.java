@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import me.catand.spdnetserver.data.DungeonRoomManager;
+
 @Slf4j
 public class Handler {
 	private final PlayerRepository playerRepository;
@@ -34,6 +36,7 @@ public class Handler {
 	private final DailyGameRecordRepository dailyGameRecordRepository;
 	private final PlayerPrefixService playerPrefixService;
 	private final DailyChallengeService dailyChallengeService;
+	private final DungeonRoomManager dungeonRoomManager;
 	private SocketService socketService;
 	private Sender sender;
 	private Map<UUID, Player> playerMap;
@@ -43,6 +46,7 @@ public class Handler {
 	               PlayerCatalogRepository playerCatalogRepository, PlayerBestiaryRepository playerBestiaryRepository,
 	               PlayerDocumentRepository playerDocumentRepository, DailyGameRecordRepository dailyGameRecordRepository,
 	               PlayerPrefixService playerPrefixService, DailyChallengeService dailyChallengeService,
+	               DungeonRoomManager dungeonRoomManager,
 	               SocketService socketService, Sender sender, Map<UUID, Player> playerMap, ChatService chatService) {
 		this.playerRepository = playerRepository;
 		this.gameRecordRepository = gameRecordRepository;
@@ -52,6 +56,7 @@ public class Handler {
 		this.dailyGameRecordRepository = dailyGameRecordRepository;
 		this.playerPrefixService = playerPrefixService;
 		this.dailyChallengeService = dailyChallengeService;
+		this.dungeonRoomManager = dungeonRoomManager;
 		this.socketService = socketService;
 		this.sender = sender;
 		this.playerMap = playerMap;
@@ -115,6 +120,23 @@ public class Handler {
 		player.setStatus(status);
 		playerMap.put(client.getSessionId(), player);
 
+		// SPDNet: 房间系统 - 加入或创建房间
+		String roomId = cEnterDungeon.getRoomId();
+		String assignedRoomId = dungeonRoomManager.joinRoom(
+			client.getSessionId(),
+			player.getName(),
+			status.getSeed(),
+			status.getDepth(),
+			status.getChallenges(),
+			roomId
+		);
+		
+		if (assignedRoomId != null) {
+			log.info("玩家{}加入了房间 {} (seed={}, depth={})", player.getName(), assignedRoomId, status.getSeed(), status.getDepth());
+		} else {
+			log.warn("玩家{}无法加入房间，将使用独立地牢", player.getName(), assignedRoomId);
+		}
+
 		Integer dailyGroupIndex = cEnterDungeon.getDailyGroupIndex();
 		Long dailySeed = cEnterDungeon.getDailySeed();
 		String dailyRecordDate = cEnterDungeon.getDailyRecordDate();
@@ -151,8 +173,9 @@ public class Handler {
 		}
 
 		String prefixName = getPlayerPrefixName(player.getName());
-		sender.sendBroadcastEnterDungeon(new SEnterDungeon(player.getName(), status, prefixName));
-		log.info("玩家{}以{}挑进入了{}地牢第{}层", player.getName(), Challenges.countActiveChallenges(status.getChallenges()), status.getSeed(), status.getDepth());
+		// SPDNet: 发送房间ID给客户端
+		sender.sendBroadcastEnterDungeon(new SEnterDungeon(player.getName(), status, prefixName, assignedRoomId));
+		log.info("玩家{}以{}挑进入了{}地牢第{}层, 房间={}", player.getName(), Challenges.countActiveChallenges(status.getChallenges()), status.getSeed(), status.getDepth(), assignedRoomId);
 	}
 
 	public void handleError(Player player, CError cError) {

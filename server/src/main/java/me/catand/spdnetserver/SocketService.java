@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import me.catand.spdnetserver.data.DungeonRoomManager;
+
 @Slf4j
 @Getter
 @Service
@@ -53,12 +55,14 @@ public class SocketService {
 	@Autowired
 	private SpdProperties spdProperties;
 	@Autowired
-private ChatService chatService;
-@Autowired
-private PlayerPrefixService playerPrefixService;
-@Autowired
-private DailyChallengeService dailyChallengeService;
-private SocketIOServer server;
+	private ChatService chatService;
+	@Autowired
+	private PlayerPrefixService playerPrefixService;
+	@Autowired
+	private DailyChallengeService dailyChallengeService;
+	@Autowired
+	private DungeonRoomManager dungeonRoomManager;
+	private SocketIOServer server;
 	private Map<UUID, Player> playerMap = new ConcurrentHashMap<>();
 	private Sender sender;
 	private Handler handler;
@@ -96,6 +100,7 @@ private SocketIOServer server;
 		handler = new Handler(playerRepository, gameRecordRepository,
 		                      playerCatalogRepository, playerBestiaryRepository, playerDocumentRepository,
 		                      dailyGameRecordRepository, playerPrefixService, dailyChallengeService,
+		                      dungeonRoomManager,
 		                      this, sender, playerMap, chatService);
 	}
 

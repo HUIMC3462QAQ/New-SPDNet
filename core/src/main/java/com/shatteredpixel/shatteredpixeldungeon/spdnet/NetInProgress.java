@@ -12,6 +12,8 @@ public class NetInProgress {
 	public static int dailyGroupIndex = -1;
 	public static String dailyRecordDate = null;
 	public static int dailyChallenges = 0;
+	// SPDNet: 房间ID，用于多人同怪
+	public static String roomId = null;
 
 	public static boolean isDailyChallenge() {
 		return mode == Mode.DAILY && dailyGroupIndex >= 0 && dailyGroupIndex <= 2;
@@ -28,5 +30,10 @@ public class NetInProgress {
 			return "dailyGroup" + dailyGroupIndex;
 		}
 		return null;
+	}
+	
+	// SPDNet: 重置房间ID
+	public static void resetRoomId() {
+		roomId = null;
 	}
 }
