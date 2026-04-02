@@ -94,9 +94,26 @@ import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
 	
+	// SPDNet: 用于多人同步的确定性随机种子
+	// 每次调用getDeterministicSeed()会返回基于seed+depth+count的确定性值
+	private static int deterministicSeedCounter = 0;
+	
 	protected ArrayList<Room> rooms;
 	
 	protected Builder builder;
+	
+	// SPDNet: 获取确定性随机种子，确保多人同步地图
+	protected static long getDeterministicSeed() {
+		// 使用 seed + depth + 计数器 来生成确定性值
+		long base = Dungeon.seedCurDepth();
+		// 使用简单的线性同余生成确定性序列
+		return (base * 31 + deterministicSeedCounter++) % Long.MAX_VALUE;
+	}
+	
+	// SPDNet: 重置计数器（在新地牢开始时）
+	public static void resetDeterministicSeed() {
+		deterministicSeedCounter = 0;
+	}
 	
 	protected Room roomEntrance;
 	protected Room roomExit;
@@ -469,7 +486,7 @@ public abstract class RegularLevel extends Level {
 		//use separate generator(s) for this to prevent held items, meta progress, and talents from affecting levelgen
 		//we can use a random long for these as they will be the same longs every time
 
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			if (Dungeon.isChallenged(Challenges.DARKNESS)){
 				int cell = randomDropCell();
 				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
@@ -489,7 +506,7 @@ public abstract class RegularLevel extends Level {
 			}
 		Random.popGenerator();
 
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			ArrayList<Item> bonesItems = Bones.get();
 			if (bonesItems != null) {
 				int cell = randomDropCell();
@@ -503,7 +520,7 @@ public abstract class RegularLevel extends Level {
 			}
 		Random.popGenerator();
 
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			DriedRose rose = Dungeon.hero.belongings.getItem( DriedRose.class );
 			if (rose != null && rose.isIdentified() && !rose.cursed && Ghost.Quest.completed()){
 				//aim to drop 1 petal every 2 floors
@@ -527,7 +544,7 @@ public abstract class RegularLevel extends Level {
 
 		//cached rations try to drop in a special room on floors 2/4/7, to a max of 2/3
 		//we increment dropped by 2 for compatibility with old saves, when the talent dropped 4/6 items
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			if (Dungeon.hero.hasTalent(Talent.CACHED_RATIONS)){
 				Talent.CachedRationsDropped dropped = Buff.affect(Dungeon.hero, Talent.CachedRationsDropped.class);
 				int targetFloor = (int)(2 + dropped.count());
@@ -557,7 +574,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 
 		//guide pages
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			Collection<String> allPages = Document.ADVENTURERS_GUIDE.pageNames();
 			ArrayList<String> missingPages = new ArrayList<>();
 			for ( String page : allPages){
@@ -585,7 +602,7 @@ public abstract class RegularLevel extends Level {
 
 		//lore pages
 		//TODO a fair bit going on here, I might want to refactor/externalize this in the future
-		Random.pushGenerator( Random.Long() );
+		Random.pushGenerator( getDeterministicSeed() );
 			if (Document.ADVENTURERS_GUIDE.allPagesFound()){
 
 				int region = 1+(Dungeon.depth-1)/5;
@@ -646,7 +663,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 
 		//ebony mimics >:)
-		Random.pushGenerator(Random.Long());
+		Random.pushGenerator(getDeterministicSeed());
 			if (Random.Float() < MimicTooth.ebonyMimicChance()){
 				ArrayList<Integer> candidateCells = new ArrayList<>();
 				if (Random.Int(2) == 0){
@@ -677,7 +694,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 
 		//extra spyglass loot
-		Random.pushGenerator(Random.Long());
+		Random.pushGenerator(getDeterministicSeed());
 			int items = (int)(Random.Float() + CrackedSpyglass.extraLootChance());
 			for (int i = 0; i < items; i++){
 				int cell = randomDropCell();
