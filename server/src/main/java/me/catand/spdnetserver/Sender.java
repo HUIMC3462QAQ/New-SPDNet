@@ -113,4 +113,14 @@ public class Sender {
 	public void sendJournals(SocketIOClient client, SJournals data) {
 		client.sendEvent("journals", data);
 	}
+
+	// SPDNet: 广播怪物受伤事件给同房间玩家
+	public void sendBroadcastMobDamage(SMobDamage data) {
+		server.getBroadcastOperations().sendEvent(Events.MOB_DAMAGE.getName(), data);
+	}
+
+	// SPDNet: 广播怪物死亡事件给同房间玩家
+	public void sendBroadcastMobDie(SMobDie data) {
+		server.getBroadcastOperations().sendEvent(Events.MOB_DIE.getName(), data);
+	}
 }

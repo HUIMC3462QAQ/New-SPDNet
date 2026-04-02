@@ -25,11 +25,8 @@ public enum Actions {
 	REQUEST_DAILY_CHALLENGE("requestDailyChallenge"),
 	VIEW_HERO("viewHero"),
 	// SPDNet: 怪物同步
-	MOB_SPAWN("mobSpawn"),
-	MOB_DIE("mobDie"),
 	MOB_DAMAGE("mobDamage"),
-	ITEM_DROP("itemDrop"),
-	ITEM_PICKUP("itemPickup");
+	MOB_DIE("mobDie");
 	private final String name;
 
 	Actions(String name) {

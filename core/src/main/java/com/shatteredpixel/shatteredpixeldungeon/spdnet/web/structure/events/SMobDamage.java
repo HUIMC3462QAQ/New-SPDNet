@@ -1,12 +1,13 @@
-package me.catand.spdnetserver.data.events;
+package com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.events;
+
+import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.Data;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.catand.spdnetserver.data.Data;
 
 /**
- * SPDNet: 怪物受伤事件 - 广播给其他玩家
+ * SPDNet: 怪物受伤事件 - 从服务器接收
  */
 @Getter
 @Setter

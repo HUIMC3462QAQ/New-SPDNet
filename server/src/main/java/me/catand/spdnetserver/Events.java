@@ -30,11 +30,8 @@ public enum Events {
 	REJECT_DAILY_CHALLENGE("rejectDailyChallenge"),
 	VIEW_HERO("viewHero"),
 	// SPDNet: 怪物同步
-	MOB_SPAWN("mobSpawn"),
-	MOB_DIE("mobDie"),
 	MOB_DAMAGE("mobDamage"),
-	ITEM_DROP("itemDrop"),
-	ITEM_PICKUP("itemPickup");
+	MOB_DIE("mobDie");
 
 
 	private final String name;

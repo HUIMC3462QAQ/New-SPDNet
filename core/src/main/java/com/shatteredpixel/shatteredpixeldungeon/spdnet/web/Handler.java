@@ -332,4 +332,32 @@ public class Handler {
 		Sender.sendRequestPlayerList(new CRequestPlayerList());
 		NetHero.syncWithCurrentLevel();
 	}
+	
+	// SPDNet: 处理怪物受伤事件 - 更新本地怪物HP
+	public static void handleMobDamage(SMobDamage mobDamage) {
+		// 查找对应位置的怪物
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob : com.shatteredpixel.shatteredpixeldungeon.Dungeon.level.mobs) {
+			if (mob.pos == mobDamage.getPos()) {
+				// 减少怪物HP（需要考虑护甲等）
+				int damage = mobDamage.getDamage();
+				mob.damage(damage, mobDamage.getAttacker());
+				NLog.h(mobDamage.getAttacker() + " 攻击了 " + mob.name() + " 造成 " + damage + " 伤害");
+				break;
+			}
+		}
+	}
+	
+	// SPDNet: 处理怪物死亡事件 - 移除本地怪物
+	public static void handleMobDie(SMobDie mobDie) {
+		// 查找对应位置的怪物并移除
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob : com.shatteredpixel.shatteredpixeldungeon.Dungeon.level.mobs) {
+			if (mob.pos == mobDie.getPos()) {
+				// 杀死怪物（不触发经验等奖励）
+				mob.destroy();
+				mob.sprite.die();
+				NLog.h(mobDie.getKiller() + " 击杀了 " + mob.name());
+				break;
+			}
+		}
+	}
 }

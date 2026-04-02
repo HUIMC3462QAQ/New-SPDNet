@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CRe
 import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CRequestPlayerList;
 import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CRequestDailyChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CViewHero;
+import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CMobDamage;
+import com.shatteredpixel.shatteredpixeldungeon.spdnet.web.structure.actions.CMobDie;
 
 /**
  * 此类用于发送消息给服务器
@@ -124,5 +126,15 @@ public class Sender {
 	// SPDNet: 发送 Document 更新到服务器
 	public static void sendDocumentUpdate(CDocumentUpdate documentUpdate) {
 		getSocket().emit("documentUpdate", JSON.toJSONString(documentUpdate));
+	}
+
+	// SPDNet: 发送怪物受伤事件
+	public static void sendMobDamage(CMobDamage mobDamage) {
+		getSocket().emit(Actions.MOB_DAMAGE.getName(), JSON.toJSONString(mobDamage));
+	}
+
+	// SPDNet: 发送怪物死亡事件
+	public static void sendMobDie(CMobDie mobDie) {
+		getSocket().emit(Actions.MOB_DIE.getName(), JSON.toJSONString(mobDie));
 	}
 }

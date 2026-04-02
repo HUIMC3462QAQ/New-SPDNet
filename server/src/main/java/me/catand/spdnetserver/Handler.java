@@ -497,4 +497,30 @@ public class Handler {
 		log.info("玩家{}的 Journal 数据已发送，包含 {} 个 Catalog, {} 个 Bestiary, {} 个 Document",
 			player.getName(), catalogs.size(), bestiaries.size(), documents.size());
 	}
+
+	// SPDNet: 处理怪物受伤事件
+	public void handleMobDamage(Player player, CMobDamage cMobDamage) {
+		if (player == null || player.getStatus() == null) {
+			return;
+		}
+		
+		log.info("玩家{}攻击了怪物 at pos={}, damage={}", player.getName(), cMobDamage.getPos(), cMobDamage.getDamage());
+		
+		// 广播给同房间其他玩家
+		SMobDamage smobDamage = new SMobDamage(cMobDamage.getPos(), cMobDamage.getDamage(), player.getName());
+		sender.sendBroadcastMobDamage(smobDamage);
+	}
+
+	// SPDNet: 处理怪物死亡事件
+	public void handleMobDie(Player player, CMobDie cMobDie) {
+		if (player == null || player.getStatus() == null) {
+			return;
+		}
+		
+		log.info("玩家{}击杀了怪物 at pos={}", player.getName(), cMobDie.getPos());
+		
+		// 广播给同房间其他玩家
+		SMobDie smobDie = new SMobDie(cMobDie.getPos(), player.getName());
+		sender.sendBroadcastMobDie(smobDie);
+	}
 }

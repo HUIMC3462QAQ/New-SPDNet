@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.spdnet.MobSync;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -824,6 +825,17 @@ public abstract class Mob extends Char {
 		}
 		
 		super.damage( dmg, src );
+		
+		// SPDNet: 同步怪物受伤事件给其他玩家
+		if (src instanceof Char) {
+			String attackerName = null;
+			if (((Char) src) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero) {
+				attackerName = com.shatteredpixel.shatteredpixeldungeon.spdnet.web.Net.name;
+			}
+			if (attackerName != null) {
+				MobSync.onMobDamaged(this, dmg, attackerName);
+			}
+		}
 	}
 	
 	
@@ -833,6 +845,9 @@ public abstract class Mob extends Char {
 		super.destroy();
 		
 		Dungeon.level.mobs.remove( this );
+		
+		// SPDNet: 同步怪物死亡事件给其他玩家
+		MobSync.onMobDied(this, com.shatteredpixel.shatteredpixeldungeon.spdnet.web.Net.name);
 
 		if (Dungeon.hero.buff(MindVision.class) != null){
 			Dungeon.observe();

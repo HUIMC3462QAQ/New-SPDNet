@@ -23,7 +23,10 @@ public enum Actions {
 	REQUEST_LEADERBOARD("requestLeaderboard"),
 	REQUEST_PLAYER_LIST("requestPlayerList"),
 	REQUEST_DAILY_CHALLENGE("requestDailyChallenge"),
-	VIEW_HERO("viewHero");
+	VIEW_HERO("viewHero"),
+	// SPDNet: 怪物同步
+	MOB_DAMAGE("mobDamage"),
+	MOB_DIE("mobDie");
 	private final String name;
 
 	Actions(String name) {
