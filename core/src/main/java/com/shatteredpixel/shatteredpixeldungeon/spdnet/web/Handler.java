@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -325,5 +326,37 @@ public class Handler {
 	public static void syncPlayerList() {
 		Sender.sendRequestPlayerList(new CRequestPlayerList());
 		NetHero.syncWithCurrentLevel();
+	}
+
+	// SPDNet: 处理其他玩家攻击怪物的事件
+	public static void handleMobDamage(SMobDamage mobDamage) {
+		if (Dungeon.level == null) return;
+		
+		// 找到对应位置的怪物
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob.pos == mobDamage.getMobPos()) {
+				// 应用伤害
+				mob.damage(mobDamage.getDamage(), mobDamage.getAttacker());
+				String displayName = PrefixUtils.formatNameWithPrefix(mobDamage.getAttacker(), "");
+				NLog.h(displayName + " 攻击了 " + mob.name() + "，造成 " + mobDamage.getDamage() + " 点伤害");
+				break;
+			}
+		}
+	}
+
+	// SPDNet: 处理其他玩家击杀怪物的事件
+	public static void handleMobDie(SMobDie mobDie) {
+		if (Dungeon.level == null) return;
+		
+		// 找到对应位置的怪物并移除
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob.pos == mobDie.getMobPos()) {
+				// 移除怪物
+				mob.destroy();
+				Dungeon.level.mobs.remove(mob);
+				NLog.h(mob.name() + " 被击败了");
+				break;
+			}
+		}
 	}
 }

@@ -123,6 +123,15 @@ public class Receiver {
 		Emitter.Listener onRejectDailyChallenge = args -> {
 			Handler.handleRejectDailyChallenge(JSON.parseObject(args[0].toString(), SRejectDailyChallenge.class));
 		};
+
+		// SPDNet: 怪物同步事件监听
+		Emitter.Listener onMobDamage = args -> {
+			Handler.handleMobDamage(JSON.parseObject(args[0].toString(), SMobDamage.class));
+		};
+		Emitter.Listener onMobDie = args -> {
+			Handler.handleMobDie(JSON.parseObject(args[0].toString(), SMobDie.class));
+		};
+
 		getSocket().on(Socket.EVENT_CONNECT, onConnected);
 		getSocket().on(Socket.EVENT_DISCONNECT, onDisconnected);
 		getSocket().on(Socket.EVENT_CONNECT_ERROR, onConnectionError);
@@ -149,6 +158,9 @@ public class Receiver {
 		getSocket().on("journals", onJournals);
 		getSocket().on(Events.ALLOW_DAILY_CHALLENGE.getName(), onAllowDailyChallenge);
 		getSocket().on(Events.REJECT_DAILY_CHALLENGE.getName(), onRejectDailyChallenge);
+		// SPDNet: 注册怪物同步事件
+		getSocket().on(Events.MOB_DAMAGE.getName(), onMobDamage);
+		getSocket().on(Events.MOB_DIE.getName(), onMobDie);
 	}
 
 	public static void cancelAll() {

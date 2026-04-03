@@ -28,7 +28,10 @@ public enum Events {
 	SERVER_MESSAGE("serverMessage"),
 	ALLOW_DAILY_CHALLENGE("allowDailyChallenge"),
 	REJECT_DAILY_CHALLENGE("rejectDailyChallenge"),
-	VIEW_HERO("viewHero");
+	VIEW_HERO("viewHero"),
+	// SPDNet: 怪物同步事件
+	MOB_DAMAGE("mobDamage"),
+	MOB_DIE("mobDie");
 
 
 	private final String name;
