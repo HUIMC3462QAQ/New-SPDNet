@@ -275,6 +275,14 @@ private SocketIOServer server;
 			handler.handleDocumentUpdate(playerMap.get(client.getSessionId()), JSON.parseObject(data, CDocumentUpdate.class));
 		});
 
+		// SPDNet: 怪物同步事件监听
+		spdNetNamespace.addEventListener(Actions.MOB_DAMAGE.getName(), String.class, (client, data, ackSender) -> {
+			handler.handleMobDamage(playerMap.get(client.getSessionId()), JSON.parseObject(data, CMobDamage.class));
+		});
+		spdNetNamespace.addEventListener(Actions.MOB_DIE.getName(), String.class, (client, data, ackSender) -> {
+			handler.handleMobDie(playerMap.get(client.getSessionId()), JSON.parseObject(data, CMobDie.class));
+		});
+
 	}
 
 	@Scheduled(cron = "0 30 0 * * ?")

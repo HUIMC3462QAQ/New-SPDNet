@@ -223,6 +223,9 @@ public abstract class Level implements Bundlable {
 
 	public void create() {
 
+		// SPDNet: 重置确定性随机数计数器，确保多人同步
+		RegularLevel.resetDeterministicSeed();
+		
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
 		//TODO maybe just make this part of RegularLevel?

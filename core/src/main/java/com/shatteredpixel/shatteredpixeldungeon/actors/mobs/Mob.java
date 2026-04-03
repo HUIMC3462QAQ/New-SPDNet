@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.spdnet.MobSync;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -824,6 +825,11 @@ public abstract class Mob extends Char {
 		}
 		
 		super.damage( dmg, src );
+		
+		// SPDNet: 同步怪物受伤事件
+		if (dmg > 0) {
+			MobSync.onMobDamaged(this, dmg);
+		}
 	}
 	
 	
@@ -831,6 +837,9 @@ public abstract class Mob extends Char {
 	public void destroy() {
 		
 		super.destroy();
+
+		// SPDNet: 同步怪物死亡事件
+		MobSync.onMobDie(this);
 		
 		Dungeon.level.mobs.remove( this );
 

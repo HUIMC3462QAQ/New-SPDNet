@@ -474,4 +474,16 @@ public class Handler {
 		log.info("玩家{}的 Journal 数据已发送，包含 {} 个 Catalog, {} 个 Bestiary, {} 个 Document",
 			player.getName(), catalogs.size(), bestiaries.size(), documents.size());
 	}
+
+	// SPDNet: 处理怪物受伤同步
+	public void handleMobDamage(Player player, CMobDamage mobDamage) {
+		log.info("玩家{}攻击了位置{}的怪物，造成{}点伤害", player.getName(), mobDamage.getMobPos(), mobDamage.getDamage());
+		sender.sendBroadcastMobDamage(new SMobDamage(mobDamage.getMobPos(), mobDamage.getDamage(), player.getName()));
+	}
+
+	// SPDNet: 处理怪物死亡同步
+	public void handleMobDie(Player player, CMobDie mobDie) {
+		log.info("玩家{}击杀了位置{}的怪物", player.getName(), mobDie.getMobPos());
+		sender.sendBroadcastMobDie(new SMobDie(mobDie.getMobPos()));
+	}
 }
